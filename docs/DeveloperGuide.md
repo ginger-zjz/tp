@@ -279,8 +279,8 @@ fields keeps the current filter.
 gives `edit` the same comma-separated index and inclusive-range syntax as other commands
 that operate on displayed persons.
 
-The following diagram summarizes how `EditCommandParser` validates the input and chooses the appropriate command
-constructor. Detailed field validation rules are described below the diagram.
+The following diagram summarizes index-expression parsing, field validation, and command creation.
+Descriptor construction and the choice of command constructor are described below the diagram.
 
 <puml src="diagrams/tracing/LogicSequenceDiagram.puml" width="700" alt="Edit command parsing sequence diagram" />
 
@@ -325,8 +325,8 @@ throws a `CommandException`. Empty `p/`, `h/`, and `t/` values are rejected; opt
 `delete` instead. Both command constructors copy the descriptor defensively, including the ordered tag edits.
 
 For a bulk edit, all edited `Person` objects and the success result are prepared before the
-model is updated. The command then replaces each selected person using the resolved selection,
-so changes to the filtered list cannot cause later selected people to be skipped.
+model is updated. The command then calls `Model#setPersonsInBatch` once to apply all replacements
+in one observable-list update, so changes to the filtered list cannot cause selected people to be skipped.
 
 The following diagram focuses on the bulk-edit execution flow. Parsing and saving are omitted because they are
 covered by the parsing diagram above and the general `LogicManager` workflow respectively.

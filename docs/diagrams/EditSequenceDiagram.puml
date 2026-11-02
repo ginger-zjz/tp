@@ -22,24 +22,12 @@ note right of IndexPersonTarget
 end note
 IndexPersonTarget --> EditCommand --: peopleToEdit
 
-loop prepare each edited student
+loop prepare each replacement
     EditCommand -> EditCommand : createEditedPerson(person, descriptor)
 end
 
-note right of EditCommand
-  All replacements are prepared before
-  the model is changed.
-end note
-
-loop apply each prepared replacement
-    EditCommand -> Model ++: setPerson(originalPerson, editedPerson)
-    Model --> EditCommand --
-end
-
-note over EditCommand, Model
-  The existing filter stays active after editing.
-  Students that no longer match disappear from the view.
-end note
+EditCommand -> Model ++: setPersonsInBatch(peopleToEdit, editedPeople)
+deactivate Model
 
 [<-- EditCommand --: CommandResult
 @enduml
